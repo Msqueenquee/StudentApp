@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.enrolllment.GalleryFragment">
 
-    <!-- Title for the Enrollment -->
+    <!-- Header Text -->
     <TextView
         android:id="@+id/text_enrollment"
         android:layout_width="match_parent"
@@ -16,29 +16,45 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:layout_marginTop="16dp"
+        android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView to display courses -->
+    <!-- Credit Limit -->
+    <TextView
+        android:id="@+id/text_credit_limit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Credit Limit = 0/24"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/text_enrollment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_courses"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/text_enrollment"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/text_credit_limit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_confirm" />
 
-    <!-- Button to confirm course selection -->
+    <!-- Confirm Button -->
     <Button
         android:id="@+id/btn_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm Selection"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

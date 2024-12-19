@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ public class GalleryFragment extends Fragment {
     private RecyclerView recyclerView;
     private CourseAdapter adapter;
     private Button btnConfirm;
+    private TextView textCreditLimit;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -39,6 +41,7 @@ public class GalleryFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.recycler_courses);
         btnConfirm = root.findViewById(R.id.btn_confirm);
+        textCreditLimit = root.findViewById(R.id.text_credit_limit);
 
         // Firebase initialization
         mAuth = FirebaseAuth.getInstance();
@@ -48,53 +51,75 @@ public class GalleryFragment extends Fragment {
         initializeCourses();
 
         // Set up RecyclerView
-        adapter = new CourseAdapter(courseList);
+        adapter = new CourseAdapter(courseList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
         // Confirm button action
         btnConfirm.setOnClickListener(v -> validateAndSaveSelectedCourses());
 
+        // Update credit limit initially
+        updateCreditLimit();
+
         return root;
     }
 
     private void initializeCourses() {
-        // Add sample courses with different SKS values
         courseList.add(new Course("Mathematics", 4));
         courseList.add(new Course("Computer Science", 3));
         courseList.add(new Course("Physics", 3));
         courseList.add(new Course("English Literature", 2));
         courseList.add(new Course("History", 2));
+        courseList.add(new Course("Biology", 3));
+        courseList.add(new Course("Engineering", 4));
+        courseList.add(new Course("Political Science", 3));
+        courseList.add(new Course("Law", 3));
+        courseList.add(new Course("Music Theory", 2));
+        courseList.add(new Course("Architecture", 4));
+        courseList.add(new Course("Environmental Science", 3));
+        courseList.add(new Course("Astronomy", 3));
+        courseList.add(new Course("Geography", 2));
+        courseList.add(new Course("Business Administration", 3));
+        courseList.add(new Course("Literary Studies", 3));
+        courseList.add(new Course("Computer Graphics", 4));
+        courseList.add(new Course("Artificial Intelligence", 4));
+        courseList.add(new Course("Data Science", 3));
     }
 
-    private void validateAndSaveSelectedCourses() {
+    public void updateCreditLimit() {
         int totalCredits = 0;
 
-        // Calculate total SKS
         for (Course course : courseList) {
             if (course.isSelected()) {
                 totalCredits += course.getCredits();
             }
         }
 
-        // Check if the total SKS exceeds the maximum limit
+        textCreditLimit.setText("Credit Limit = " + totalCredits + "/" + MAX_SKSS);
+    }
+
+    private void validateAndSaveSelectedCourses() {
+        int totalCredits = 0;
+
+        for (Course course : courseList) {
+            if (course.isSelected()) {
+                totalCredits += course.getCredits();
+            }
+        }
+
         if (totalCredits > MAX_SKSS) {
-            // Show error message if it exceeds
             Toast.makeText(getContext(), "You can select a maximum of " + MAX_SKSS + " SKS.", Toast.LENGTH_LONG).show();
         } else {
-            // Save selected courses to Firebase if valid
             saveSelectedCoursesToFirebase();
         }
     }
 
     private void saveSelectedCoursesToFirebase() {
-        String userId = mAuth.getCurrentUser().getUid(); // Get user ID from Firebase Auth
+        String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userCoursesRef = mDatabase.child("users").child(userId).child("selected_courses");
 
         for (Course course : courseList) {
-            // Save the course name and its selected status along with SKS
             userCoursesRef.child(course.getName()).setValue(course.isSelected());
-            // Optionally save the credits for each course
             mDatabase.child("users").child(userId).child("course_credits").child(course.getName()).setValue(course.getCredits());
         }
 

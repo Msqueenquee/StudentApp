@@ -10,16 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studentapp2.model.Course;
-import com.example.studentapp2.R;
+import com.example.studentapp2.ui.enrolllment.GalleryFragment;
 
 import java.util.List;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
 
     private final List<Course> courseList;
+    private final GalleryFragment fragment;
 
-    public CourseAdapter(List<Course> courseList) {
+    public CourseAdapter(List<Course> courseList, GalleryFragment fragment) {
         this.courseList = courseList;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -36,8 +38,11 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         holder.courseCredits.setText(course.getCredits() + " SKS");
         holder.checkBox.setChecked(course.isSelected());
 
-        // Set listener for checking/unchecking course
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> course.setSelected(isChecked));
+        // Update selection state and notify fragment to update credit limit
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            course.setSelected(isChecked);
+            fragment.updateCreditLimit(); // Notify the fragment to update credit limit
+        });
     }
 
     @Override
